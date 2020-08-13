@@ -3,16 +3,19 @@
 
 #include <vector>
 #include <numeric>
+#include <algorithm>
 
 #include "../Interface/IHash.h"
 
 namespace Pih
 {
-    class PercepturalHash : public IHash
+    class PerceptualHash : public IHash
     {
     public:
-        PercepturalHash() {};
+        PerceptualHash() {};
         std::vector<unsigned char> calculateHash(const std::vector<unsigned char>& image) override;
+    private:
+        unsigned char calculateMedianColor(const std::vector<unsigned char>& image);
     };
 }
 
