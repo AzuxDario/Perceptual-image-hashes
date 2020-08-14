@@ -4,6 +4,8 @@ namespace Pih
 {
     std::vector<unsigned char> PerceptualHash::calculateHash(const std::vector<unsigned char>& image)
     {
+        std::vector<unsigned char> resized = resizeImage(image);
+        
         std::vector<unsigned char> result;
         result.reserve(size * size);
         
@@ -13,10 +15,9 @@ namespace Pih
     std::vector<unsigned char> PerceptualHash::resizeImage(const std::vector<unsigned char>& image)
     {
         std::vector<unsigned char> newImage;
-        unsigned int newImageSize = size * 4;
         newImage.reserve(newImageSize * newImageSize);
 
-        double factor = static_cast<double>(size - 1) / (newImage - 1); 
+        double factor = static_cast<double>(size - 1) / (newImageSize - 1); 
         for(unsigned int x = 0; x < newImageSize; ++x)
         {
             for(unsigned int y = 0; y < newImageSize; ++y)
@@ -32,15 +33,15 @@ namespace Pih
                 std::pair<double, double> Q22 = std::make_pair(ceil(oldX), ceil(oldY));
 
                 // Interpolate new points
-                unsigned char f1 = ((Q12.first - oldX) / (Q12.first - Q11.first)) * image.at(Image::getPosition(Q11.first, Q11.second)) +
-                                   ((oldX - Q11.first) / (Q12.first - Q11.first)) * image.at(Image::getPosition(Q12.first, Q12.second));
-                unsigned char f2 = ((Q22.first - oldX) / (Q22.first - Q21.first)) * image.at(Image::getPosition(Q21.first, Q21.second)) +
-                                   ((oldX - Q21.first) / (Q22.first - Q21.first)) * image.at(Image::getPosition(Q22.first, Q22.second));
+                unsigned char f1 = ((Q12.first - oldX) / (Q12.first - Q11.first)) * image.at(Image::getPosition(Q11.first, Q11.second, size)) +
+                                   ((oldX - Q11.first) / (Q12.first - Q11.first)) * image.at(Image::getPosition(Q12.first, Q12.second, size));
+                unsigned char f2 = ((Q22.first - oldX) / (Q22.first - Q21.first)) * image.at(Image::getPosition(Q21.first, Q21.second, size)) +
+                                   ((oldX - Q21.first) / (Q22.first - Q21.first)) * image.at(Image::getPosition(Q22.first, Q22.second, size));
                 
                 unsigned char f3 = ((Q22.second - oldY) / (Q22.second - Q21.second)) * f1 +
-                                   ((oldY - Q21.second) / (Q22.firsecondst - Q21.second)) * f2;
+                                   ((oldY - Q21.second) / (Q22.second - Q21.second)) * f2;
                 
-                newImage.at[Image::getPosition(x, y, newImageSize)] = f3;
+                newImage.at(Image::getPosition(x, y, newImageSize)) = f3;
             }
         }
 

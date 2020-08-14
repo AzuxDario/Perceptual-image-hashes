@@ -14,6 +14,8 @@ namespace Pih
 {
     class PerceptualHash : public IHash
     {
+    protected:
+        unsigned int newImageSize = size * 4;
     public:
         PerceptualHash() {};
         std::vector<unsigned char> calculateHash(const std::vector<unsigned char>& image) override;
