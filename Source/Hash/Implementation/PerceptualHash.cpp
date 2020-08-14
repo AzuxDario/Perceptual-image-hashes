@@ -14,19 +14,18 @@ namespace Pih
     {
         std::vector<unsigned char> newImage;
         unsigned int newImageSize = size * 4;
-        unsigned int newImageSizeSquare = newImageSize * newImageSize;
-        newImage.reserve(newImageSizeSquare);
+        newImage.reserve(newImageSize * newImageSize);
 
         double factor = static_cast<double>(size - 1) / (newImage - 1); 
-        for(unsigned int x = 0; x < newImageSizeSquare; ++x)
+        for(unsigned int x = 0; x < newImageSize; ++x)
         {
-            for(unsigned int y = 0; y < newImageSizeSquare; ++y)
+            for(unsigned int y = 0; y < newImageSize; ++y)
             {
                 // Get position in old image
                 unsigned int oldX = x * factor;
                 unsigned int oldY = y * factor;
 
-                // Get position of surrounding points;
+                // Get position of surrounding points
                 std::pair<double, double> Q11 = std::make_pair(floor(oldX), floor(oldY));
                 std::pair<double, double> Q12 = std::make_pair(ceil(oldX), floor(oldY));
                 std::pair<double, double> Q21 = std::make_pair(floor(oldX), ceil(oldY));
