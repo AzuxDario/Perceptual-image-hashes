@@ -11,7 +11,7 @@ namespace Pih
         unsigned int size = 8;
     public:
         IHash() {};
-        virtual std::vector<unsigned char>  calculateHash(const std::vector<unsigned char>& image) = 0;
+        virtual std::vector<unsigned char> calculateHash(const std::vector<unsigned char>& image) = 0;
     };
 }
 
