@@ -5,7 +5,7 @@ namespace Pih
     std::vector<unsigned char> PerceptualHash::calculateHash(const std::vector<unsigned char>& image)
     {
         std::vector<unsigned char> resized = resizeImage(image);
-        
+        std::vector<unsigned char> transformed = calculateDCT(resized);
         std::vector<unsigned char> result;
         result.reserve(size * size);
         
@@ -46,6 +46,55 @@ namespace Pih
         }
 
         return newImage;
+    }
+
+    std::vector<unsigned char> PerceptualHash::calculateDCT(const std::vector<unsigned char>& image)
+    {
+        std::vector<unsigned char> transformed;
+        transformed.reserve(newImageSize * newImageSize);
+        // Horizontal lines
+        for(unsigned int i = 0; i < newImageSize; ++i)
+        {
+            auto newLine = std::vector<unsigned char>(image.begin() + i * newImageSize, image.begin() + (i + 1) * newImageSize);
+            transformed.insert(transformed.end(), newLine.begin(), newLine.end());
+        }
+        // Vertical lines
+        std::vector<unsigned char> toTransform;
+        for(unsigned int i = 0; i < newImageSize; ++i)
+        {
+            for(unsigned int j = 0; j < newImageSize; ++j)
+            {
+                toTransform.push_back(transformed.at(j * newImageSize + i));
+            }
+
+            auto newColumn = calculateDCTLine(toTransform);
+
+            for(unsigned int j = 0; j < newImageSize; ++j)
+            {
+                transformed.at(j * newImageSize + i) = newColumn.at(j);
+            }
+        }
+
+        return transformed;
+    }
+
+    std::vector<unsigned char> PerceptualHash::calculateDCTLine(const std::vector<unsigned char>& line)
+    {
+        std::vector<unsigned char> transformed;
+        transformed.reserve(newImageSize);
+        double factor = Pi / newImageSize;
+
+        for(unsigned int i = 0; i < newImageSize; ++i)
+        {
+            double sum = 0;
+            for(unsigned int j = 0; j < newImageSize; ++j)
+            {
+                sum += line.at(j) * std::cos((j + 0.5) * i * factor);
+            }
+            transformed.push_back(static_cast<unsigned char>(sum));
+        }
+
+        return transformed;
     }
 
     unsigned char PerceptualHash::calculateMedianColor(const std::vector<unsigned char>& image)
