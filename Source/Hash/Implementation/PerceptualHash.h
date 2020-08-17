@@ -24,6 +24,7 @@ namespace Pih
         std::vector<unsigned char> resizeImage(const std::vector<unsigned char>& image);
         std::vector<unsigned char> calculateDCT(const std::vector<unsigned char>& image);
         std::vector<unsigned char> calculateDCTLine(const std::vector<unsigned char>& line);
+        std::vector<unsigned char> extractTopPixels(const std::vector<unsigned char>& image);
         unsigned char calculateMedianColor(const std::vector<unsigned char>& image);
     };
 }

@@ -6,9 +6,16 @@ namespace Pih
     {
         std::vector<unsigned char> resized = resizeImage(image);
         std::vector<unsigned char> transformed = calculateDCT(resized);
+        std::vector<unsigned char> topPixels = extractTopPixels(transformed);        
+
         std::vector<unsigned char> result;
         result.reserve(size * size);
-        
+        unsigned char medianColor = calculateMedianColor(topPixels);
+
+        for(auto pixel : topPixels)
+        {
+            pixel > medianColor ? result.push_back(1) : result.push_back(0);
+        }
         return result;
     }
 
@@ -95,6 +102,21 @@ namespace Pih
         }
 
         return transformed;
+    }
+
+    std::vector<unsigned char> PerceptualHash::extractTopPixels(const std::vector<unsigned char>& image)
+    {
+        std::vector<unsigned char> newImage;
+        newImage.reserve(size * size);
+        for(unsigned int i = 0; i < size; ++i)
+        {
+            for(unsigned int j = 0; j < size; ++j)
+            {
+                newImage.push_back(image.at(Image::getPosition(i, j, size)));
+            }
+        }
+
+        return newImage;
     }
 
     unsigned char PerceptualHash::calculateMedianColor(const std::vector<unsigned char>& image)
